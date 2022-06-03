@@ -3,9 +3,9 @@ name: "selenium grid 4 on  minikube CI workflow"
 
 on:
   push:
-    branches: [ test ]
-  # schedule:
-  #     - cron:  '0 0 1 * *' ##execution of a task in the first minute of the month 
+    branches: [ main ]
+  schedule:
+      - cron:  '0 0 1 * *' ##execution of a task in the first minute of the month 
       
       
 jobs:
@@ -22,13 +22,10 @@ jobs:
           # Kubernetes versions are expressed as x.y.z, where x is the major version, 
           # y is the minor version, and z is the patch version
           # https://minikube.sigs.k8s.io/docs/handbook/config/#selecting-a-kubernetes-version
-          # https://github.com/kubernetes/minikube/releases
-            # minikube: [v1.13.1] #OK
-            # kubernetes: [v1.19.2] #OK   
+          # https://github.com/kubernetes/minikube/releases  
             minikube: [v1.25.2]
             # https://github.com/kubernetes/kubernetes/releases/tag/v1.24.1 
-            # kubernetes: [v1.24.1]     
-            kubernetes: [v1.24.1,v1.23.7,v1.22.10]     
+            kubernetes: [v1.24.1]     
     steps:
       - name: Checkout
         uses: actions/checkout@v1
@@ -47,7 +44,6 @@ jobs:
           echo "current-context:" $(kubectl config current-context)
           echo "environment-kubeconfig:" ${KUBECONFIG}   
       - name: "Deploy Grid 4 on minikube"
-        # run: kubectl apply -f k8s-deployment-full-grid-4.0.yaml          
         run: kubectl apply -f app/k8s-deployment-full-grid-4.0.yaml          
       - name: "Expose Router service"
         run: kubectl expose deployment selenium-router-deployment --type=NodePort --port=4444 --target-port=4444                               
